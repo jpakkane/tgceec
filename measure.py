@@ -35,6 +35,8 @@ def plainchecker(infile):
                  'mutex' : True,
                  'future' : True,
                  'typeinfo' : True,
+                 'tuple' : True,
+                 'initializer_list' : True
                  }
     includere = re.compile('''^\s*#\s*include\s*[<"](.*?)[>"]''')
     for line in open(infile):
