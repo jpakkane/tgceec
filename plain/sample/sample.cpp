@@ -1,3 +1,3 @@
 #include<vector>
 
-#error Funky.
+void I am error();

@@ -18,15 +18,15 @@ def plainchecker(infile):
                  }
     includere = re.compile('''^\s*#\s*include\s*[<"](.*?)[>"]''')
     for line in open(infile):
-        if '#define' in line:
-            print("Invalid use of preprocessor detected in", infile)
-            return False
         m = re.search(includere, line)
         if m:
             include = m.group(1)
             if include not in permitted:
                 print("Invalid include", include, "in", infile)
                 return False
+        elif '#' in line:
+            print('Invalid use of preprocessor in', infile)
+            return False
     return True
 
 def measure(subdir):
@@ -61,16 +61,18 @@ def measure(subdir):
     return results
 
 def run():
-    print('Starting measurements for type plain')
+    print('Starting measurements for type plain.')
     plain_times = measure('plain')
     print('Table for category plain:\n')
     for i in plain_times:
         print(i[0], i[1], i[2], i[3])
-    print('Starting measurements for type bare hands')
+    print('')
+    print('Starting measurements for type bare hands.')
     bare_times = measure('barehands')
-    print('Table for category barehands:\n')
+    print('Table for category bare hands:\n')
     for i in bare_times:
         print(i[0], i[1], i[2], i[3])
+    print('')
 
 if __name__ == '__main__':
     run()
