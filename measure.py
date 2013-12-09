@@ -29,6 +29,9 @@ def plainchecker(infile):
             return False
     return True
 
+def anythingchecker(infile):
+    return True
+
 def measure(subdir):
     compiler = '/usr/bin/g++'
     basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
@@ -41,22 +44,28 @@ def measure(subdir):
             checker = plainchecker
         elif subdir == 'barehands':
             checker = barechecker
+        else:
+            checker = anythingchecker
         if not checker(fullsrc):
             continue
         if not os.path.isfile(fullsrc):
             print("Bad file in subdir", d)
             continue
         cmd = [compiler, fullsrc] + basic_flags
+        if subdir == 'anything':
+            includefile = os.path.join(d, 'includes.txt')
+            for line in open(includefile):
+                cmd.append('-I' + line.strip())
         pc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = pc.communicate()
-        stdout = res[1]
-        num_chars = len(open(fullsrc).read())
-        num_lines = len(stdout.split(b'\n'))
-        if num_lines == 0:
+        stderr = res[1]
+        input_size = len(open(fullsrc).read())
+        output_size = len(stderr.split(b'\n'))
+        if output_size == 0:
             print('Empty input file in subdir', d)
             continue
-        ratio = num_lines / num_chars
-        results.append((ratio, num_chars, num_lines, basename))
+        ratio = output_size / input_size
+        results.append((ratio, input_size, output_size, basename))
     results.sort(reverse=True)
     return results
 
@@ -71,6 +80,11 @@ def run():
     bare_times = measure('barehands')
     print('Table for category bare hands:\n')
     for i in bare_times:
+        print(i[0], i[1], i[2], i[3])
+    print('')
+    anything_times = measure('anything')
+    print('Table for category anything:\n')
+    for i in anything_times:
         print(i[0], i[1], i[2], i[3])
     print('')
 

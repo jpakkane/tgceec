@@ -1,3 +1,7 @@
 #include<variant.hpp>
 
-#error Funky.
+void foo() {
+    boost::variant<int> foo;
+    boost::variant<boost::variant<char*>> bar;
+    foo = bar;
+}
