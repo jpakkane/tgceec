@@ -5,6 +5,12 @@ import os
 import subprocess
 import re
 
+def barechecker(infile):
+    if '#' in open(infile).read():
+        print("Attempt to use the preprocessor in", infile)
+        return False
+    return True
+
 def plainchecker(infile):
     permitted = {'vector' : True,
                  'map' : True,
@@ -33,6 +39,8 @@ def measure(subdir):
         fullsrc = os.path.join(d, sourcename)
         if subdir == 'plain':
             checker = plainchecker
+        elif subdir == 'barehands':
+            checker = barechecker
         if not checker(fullsrc):
             continue
         if not os.path.isfile(fullsrc):
@@ -57,6 +65,11 @@ def run():
     plain_times = measure('plain')
     print('Table for category plain:\n')
     for i in plain_times:
+        print(i[0], i[1], i[2], i[3])
+    print('Starting measurements for type bare hands')
+    bare_times = measure('barehands')
+    print('Table for category barehands:\n')
+    for i in bare_times:
         print(i[0], i[1], i[2], i[3])
 
 if __name__ == '__main__':

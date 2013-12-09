@@ -1,1 +1,1 @@
-#error Funky
+void I am error();
