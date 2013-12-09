@@ -60,7 +60,7 @@ def measure(subdir):
         res = pc.communicate()
         stderr = res[1]
         input_size = len(open(fullsrc).read())
-        output_size = len(stderr.split(b'\n'))
+        output_size = len(stderr)
         if output_size == 0:
             print('Empty input file in subdir', d)
             continue
@@ -82,6 +82,7 @@ def run():
     for i in bare_times:
         print(i[0], i[1], i[2], i[3])
     print('')
+    print('Starting measurements for type anything.')
     anything_times = measure('anything')
     print('Table for category anything:\n')
     for i in anything_times:
