@@ -1,0 +1,42 @@
+How to participate
+
+Select which category you wish to participate in. For this example
+we will use the plain category. Create a subdirectory to store
+your entry in. It can have any name, but it is recommended to make
+it short and relatively unique, such as an abbreviation of your name.
+
+mkdir bobmcbob
+
+In this subdirectory create a source file whose name is the same as
+the directory and with the suffix cpp.
+
+touch bobmcbob/bobmcbob.cpp
+
+Create an info file in the subdirectory with your contact info.
+It must be called info.txt and contain the following lines.
+
+email your@email-address.com
+title How you wish your creation to be called
+author The Name or pseudonym by which you wish to be called
+
+Your email address or the name of the entry directory will not be published.
+
+Write your entry in the cpp file. You can inspect your results by
+running the measurement script.
+
+./measure.py
+
+If your entry has problems, the script will tell you.
+
+If you participate in the anything category, you need to create two more
+files, a package file and include directory file. The package file
+contains a list of Ubuntu packages (one per line) that must be installed
+in order to compile the code. It is called packages.txt. The include
+file lists the directories, also one per line, that must be put in the search 
+path for your compilation. It is called includes.txt.
+
+Once your code passes validation it is ready for submission. Zip up your
+directory and email it to <email.address@somewhere.com>. Note that if
+you submit an entry that does not pass the validation check, it will
+be silently rejected from the competition. It is your responsibility
+to verify that your code passes.
