@@ -26,7 +26,7 @@ def barechecker(infile):
     if len(open(infile).read()) > 1024:
         print('Source file', infile, 'too long.')
     src = open(infile).read()
-    if '#' in src or '??=' in src:
+    if '#' in src or '??=' in src or '%:' in src:
         print("Attempt to use the preprocessor in", infile)
         return False
     return True
@@ -68,7 +68,7 @@ def plainchecker(infile):
             if include not in permitted:
                 print("Invalid include", include, "in", infile)
                 return False
-        elif '#' in line or '??=' in line:
+        elif '#' in line or '??=' in line or '%:' in line:
             print('Invalid use of preprocessor in', infile)
             return False
     return True
