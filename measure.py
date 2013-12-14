@@ -65,6 +65,8 @@ def packages_installed(packagefile):
         print('Package file missing in ', packagefile)
     for line in open(packagefile).readlines():
         line = line.strip()
+        if line == '':
+            continue
         cmd = ['aptitude', 'show', line]
         pc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         so = pc.communicate()[0].decode()
