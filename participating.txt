@@ -1,9 +1,9 @@
 How to participate
 
 Select which category you wish to participate in. For this example
-we will use the plain category. Create a subdirectory to store
-your entry in. It can have any name, but it is recommended to make
-it short and relatively unique, such as an abbreviation of your name.
+we will use the plain category. Create a subdirectory in the category
+subdir to store your entry in. It can have any name, but it is recommended
+to make it short and relatively unique, such as an abbreviation of your name.
 
 mkdir bobmcbob
 
@@ -13,11 +13,11 @@ the directory and with the suffix cpp.
 touch bobmcbob/bobmcbob.cpp
 
 Create an info file in the subdirectory with your contact info.
-It must be called info.txt and contain the following lines.
+It must be called info.txt and contain the following three lines.
 
 email your@email-address.com
 title How you wish your creation to be called
-author The Name or pseudonym by which you wish to be called
+author The Name or alias by which you wish to be called
 
 Your email address or the name of the entry directory will not be published.
 
@@ -34,6 +34,9 @@ contains a list of Ubuntu packages (one per line) that must be installed
 in order to compile the code. It is called packages.txt. The include
 file lists the directories, also one per line, that must be put in the search 
 path for your compilation. It is called includes.txt.
+
+Each category has a working sample entry. Feel free to use them to build
+your version.
 
 Once your code passes validation it is ready for submission. Zip up your
 directory and email it to <email.address@somewhere.com>. Note that if
