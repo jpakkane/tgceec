@@ -125,6 +125,9 @@ def measure(subdir):
         basename = os.path.split(d)[-1]
         sourcename = basename + '.cpp'
         fullsrc = os.path.join(d, sourcename)
+        if not os.path.isfile(fullsrc):
+            print('Missing source file', fullsrc)
+            continue
         infofile = os.path.join(d, 'info.txt')
         packagefile = os.path.join(d, 'packages.txt')
         if subdir == 'anything':
