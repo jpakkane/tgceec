@@ -6,6 +6,8 @@ import subprocess
 import re
 
 def barechecker(infile):
+    if len(open(infile).read()) > 2048:
+        print('Source file', infile, 'too long.')
     if '#' in open(infile).read():
         print("Attempt to use the preprocessor in", infile)
         return False
@@ -38,6 +40,8 @@ def plainchecker(infile):
                  'tuple' : True,
                  'initializer_list' : True
                  }
+    if len(open(infile).read()) > 512:
+        print('Source file', infile, 'too long.')
     includere = re.compile('''^\s*#\s*include\s*[<"](.*?)[>"]''')
     for line in open(infile):
         m = re.search(includere, line)
@@ -52,6 +56,8 @@ def plainchecker(infile):
     return True
 
 def anythingchecker(infile):
+    if len(open(infile).read()) > 512:
+        print('Source file', infile, 'too long.')
     return True
 
 def measure(subdir):
