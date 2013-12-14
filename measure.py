@@ -60,6 +60,19 @@ def anythingchecker(infile):
         print('Source file', infile, 'too long.')
     return True
 
+def packages_installed(packagefile):
+    if not os.path.isfile(packagefile):
+        print('Package file missing in ', packagefile)
+    for line in open(packagefile).readlines():
+        line = line.strip()
+        cmd = ['aptitude', 'show', line]
+        pc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        so = pc.communicate()[0].decode()
+        if not 'State: installed' in so:
+            print('Package', line, 'not installed in', packagefile)
+            return False
+    return True
+
 def info_ok(infofile):
     if not os.path.isfile(infofile):
         print('Info file missing for', infofile)
@@ -87,13 +100,21 @@ def info_ok(infofile):
 
 def measure(subdir):
     compiler = '/usr/bin/g++'
-    basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
+    basic_flags = ['-std=c++11', '-fmax-errors=1', '-c', '-o', '/dev/null']
     results = []
     for d in glob(os.path.join(subdir, '*')):
         basename = os.path.split(d)[-1]
         sourcename = basename + '.cpp'
         fullsrc = os.path.join(d, sourcename)
         infofile = os.path.join(d, 'info.txt')
+        packagefile = os.path.join(d, 'packages.txt')
+        if subdir == 'anything':
+            if not packages_installed(packagefile):
+                continue
+        else:
+            if os.path.isfile(packagefile):
+                print('Package file exists in non-anything dir', basename)
+                continue
         if not info_ok(infofile):
             continue
         if subdir == 'plain':
