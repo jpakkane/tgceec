@@ -39,7 +39,11 @@ Each category has a working sample entry. Feel free to use them to build
 your version.
 
 Once your code passes validation it is ready for submission. Zip up your
-directory and email it to <email.address@somewhere.com>. Note that if
+directory.
+
+zip -r bobmcbob.zip plain/bobmcbob
+
+Now you can email it to <email.address@somewhere.com>. Note that if
 you submit an entry that does not pass the validation check, it will
 be silently rejected from the competition. It is your responsibility
 to verify that your code passes.

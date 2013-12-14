@@ -117,6 +117,16 @@ def info_ok(infofile):
         return False
     return True
 
+def has_extra_files(d, basename):
+    allowed = {'info.txt' : True,
+               'includes.txt' : True,
+               'packages.txt' : True,
+               basename + '.cpp' : True}
+    for d in glob(os.path.join(d, '*')):
+        base = os.path.split(d)[-1]
+        if base not in allowed:
+            print(d, 'has an extra file', base)
+
 def measure(subdir):
     compiler = '/usr/bin/g++'
     basic_flags = ['-std=c++11', '-fmax-errors=1', '-c', '-o', '/dev/null']
@@ -125,6 +135,8 @@ def measure(subdir):
         basename = os.path.split(d)[-1]
         sourcename = basename + '.cpp'
         fullsrc = os.path.join(d, sourcename)
+        if has_extra_files(d, basename):
+            continue
         if not os.path.isfile(fullsrc):
             print('Missing source file', fullsrc)
             continue
