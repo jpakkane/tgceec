@@ -35,7 +35,7 @@ in order to compile the code. It is called packages.txt. The include
 file lists the directories, also one per line, that must be put in the search 
 path for your compilation. It is called includes.txt.
 
-Each category has a working sample entry. Feel free to use them to build
+Each category has a working sample entry. Feel free to use them to create
 your version.
 
 Once your code passes validation it is ready for submission. Zip up your
