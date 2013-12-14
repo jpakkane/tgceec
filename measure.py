@@ -23,7 +23,7 @@ import subprocess
 import re
 
 def barechecker(infile):
-    if len(open(infile).read()) > 2048:
+    if len(open(infile).read()) > 1024:
         print('Source file', infile, 'too long.')
     if '#' in open(infile).read():
         print("Attempt to use the preprocessor in", infile)
@@ -73,7 +73,7 @@ def plainchecker(infile):
     return True
 
 def anythingchecker(infile):
-    if len(open(infile).read()) > 512:
+    if len(open(infile).read()) > 256:
         print('Source file', infile, 'too long.')
     return True
 
