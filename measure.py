@@ -60,6 +60,31 @@ def anythingchecker(infile):
         print('Source file', infile, 'too long.')
     return True
 
+def info_ok(infofile):
+    if not os.path.isfile(infofile):
+        print('Info file missing for', infofile)
+        return False
+    lines = open(infofile).readlines()
+    if len(lines) != 3:
+        print('Incorrect number of lines in info file in', infofile)
+        return False
+    elems = lines[0].strip().split()
+    if len(elems) != 2:
+        print('Malformed email line in', infofile)
+        return False
+    if elems[0] != 'email' or '@' not in elems[1]:
+        print('Malformed email line in', infofile)
+        return False
+    elems = lines[1].strip().split()
+    if len(elems) < 2 or elems[0] != 'title':
+        print('Malformed title line in', infofile)
+        return False
+    elems = lines[2].strip().split()
+    if len(elems) < 2 or elems[0] != 'author':
+        print('Malformed author line in', infofile)
+        return False
+    return True
+
 def measure(subdir):
     compiler = '/usr/bin/g++'
     basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
@@ -68,6 +93,9 @@ def measure(subdir):
         basename = os.path.split(d)[-1]
         sourcename = basename + '.cpp'
         fullsrc = os.path.join(d, sourcename)
+        infofile = os.path.join(d, 'info.txt')
+        if not info_ok(infofile):
+            continue
         if subdir == 'plain':
             checker = plainchecker
         elif subdir == 'barehands':
@@ -102,19 +130,19 @@ def run():
     plain_times = measure('plain')
     print('Table for category plain:\n')
     for i in plain_times:
-        print(i[0], i[1], i[2], i[3])
+        print('%.2f' % i[0], i[1], i[2], i[3])
     print('')
     print('Starting measurements for type bare hands.')
     bare_times = measure('barehands')
     print('Table for category bare hands:\n')
     for i in bare_times:
-        print(i[0], i[1], i[2], i[3])
+        print('%.2f' % i[0], i[1], i[2], i[3])
     print('')
     print('Starting measurements for type anything.')
     anything_times = measure('anything')
     print('Table for category anything:\n')
     for i in anything_times:
-        print(i[0], i[1], i[2], i[3])
+        print('%.2f' % i[0], i[1], i[2], i[3])
     print('')
 
 if __name__ == '__main__':
