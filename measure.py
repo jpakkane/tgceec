@@ -167,6 +167,8 @@ def measure(subdir):
         if subdir == 'anything':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
+                if not line.startswith('/usr/include') or '..' in line or '//' in line:
+                    print('Invalid include dir', line.strip(), 'in', d)
                 cmd.append('-I' + line.strip())
         pc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = pc.communicate()
