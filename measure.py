@@ -184,6 +184,11 @@ def measure(subdir):
     return results
 
 def run():
+    print('The Grand C++ Error Explosion Competition\n')
+    print('This program will measure entries, sort them by fitness')
+    print('and print the results.\n')
+    print('The output contains four elements:')
+    print('ratio, source code size, error message size, name\n')
     print('Starting measurements for type plain.')
     plain_times = measure('plain')
     print('Table for category plain:\n')
