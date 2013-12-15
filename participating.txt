@@ -1,5 +1,13 @@
 How to participate
 
+This documentation describes how to create and submit your entry to the
+Grand C++ Error Explosion Competition. The steps below should work on any
+Linux platform but the final measurements will be done on a 64 bit
+install of Ubuntu 13/10 (saucy). It is the submitter's responsibility
+to test their submission on the target platform, the organizers will not
+provide any technical support or intermediary results over email or any
+other medium.
+
 Select which category you wish to participate in. For this example
 we will use the plain category. Create a subdirectory in the category
 subdir to store your entry in. It can have any name, but it is recommended
