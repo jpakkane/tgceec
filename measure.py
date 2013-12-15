@@ -130,7 +130,7 @@ def has_extra_files(d, basename):
 
 def measure(subdir):
     compiler = '/usr/bin/g++'
-    basic_flags = ['-std=c++11', '-fmax-errors=1', '-c', '-o', '/dev/null']
+    basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
     results = []
     for d in glob(os.path.join(subdir, '*')):
         basename = os.path.split(d)[-1]
