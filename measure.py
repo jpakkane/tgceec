@@ -127,6 +127,8 @@ def has_extra_files(d, basename):
         base = os.path.split(d)[-1]
         if base not in allowed:
             print(d, 'has an extra file', base)
+            return True
+    return False
 
 def measure(subdir):
     compiler = '/usr/bin/g++'
@@ -173,7 +175,7 @@ def measure(subdir):
                 if not line.startswith('/usr/include') or '..' in line or '//' in line:
                     print('Invalid include dir', line.strip(), 'in', d)
                 cmd_arr.append('-I' + line.strip())
-        cmd_arr += ['2>&1', '/dev/null', '|', 'wc', '-c']
+        cmd_arr += ['2>&1', '>', '/dev/null', '|', 'wc', '-c']
         cmd = ' '.join(cmd_arr)
         # Remember kids, you should not use shell=True unless you
         # have a very good reason. We need it to use wc, because
@@ -183,7 +185,7 @@ def measure(subdir):
         stdout = res[0].decode()
         input_size = len(open(fullsrc).read())
         output_size = int(stdout)
-        if output_size == 0:
+        if input_size == 0:
             print('Empty input file in subdir', d)
             continue
         ratio = output_size / input_size
