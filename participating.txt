@@ -57,4 +57,7 @@ zip -r bobmcbob.zip plain/bobmcbob
 Now you can email it to <tgceec@gmail.com>. Note that if you submit an
 entry that does not pass the validation check, it will be silently
 rejected from the competition. It is your responsibility to verify
-that your code passes.
+that your code passes. The test harness may be updated during the 
+competition. Submissions that don't pass the updated test harness
+will be discarded. It is the responsibility of the participants to
+resubmit entries that do not pass the test suite any more.
