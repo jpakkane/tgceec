@@ -163,18 +163,20 @@ def measure(subdir):
         if not os.path.isfile(fullsrc):
             print("Bad file in subdir", d)
             continue
-        cmd = [compiler, fullsrc] + basic_flags
+        cmd_arr = [compiler, fullsrc] + basic_flags
         if subdir == 'anything':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
                 if not line.startswith('/usr/include') or '..' in line or '//' in line:
                     print('Invalid include dir', line.strip(), 'in', d)
-                cmd.append('-I' + line.strip())
-        pc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                cmd_arr.append('-I' + line.strip())
+        cmd_arr += ['2>&1', '/dev/null', '|', 'wc', '-c']
+        cmd = ' '.join(cmd_arr)
+        pc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = pc.communicate()
-        stderr = res[1]
+        stdout = res[0].decode()
         input_size = len(open(fullsrc).read())
-        output_size = len(stderr)
+        output_size = int(stdout)
         if output_size == 0:
             print('Empty input file in subdir', d)
             continue
