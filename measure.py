@@ -168,18 +168,18 @@ def measure(subdir):
         if not os.path.isfile(fullsrc):
             print("Bad file in subdir", d)
             continue
-        cmd_arr = [compiler, "'%s'" % fullsrc] + basic_flags
+        cmd_arr = ['(', 'ulimit', '-t', '300', ';',\
+                   'ulimit', '-v', '16252928', ';', compiler, "'%s'" % fullsrc] + basic_flags
         if subdir == 'anything':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
                 if not line.startswith('/usr/include') or '..' in line or '//' in line:
                     print('Invalid include dir', line.strip(), 'in', d)
                 cmd_arr.append('-I' + line.strip())
-        cmd_arr += ['2>&1', '>', '/dev/null', '|', 'wc', '-c']
+        cmd_arr += [')', '2>&1', '>', '/dev/null', '|', 'wc', '-c']
         cmd = ' '.join(cmd_arr)
         # Remember kids, you should not use shell=True unless you
-        # have a very good reason. We need it to use wc, because
-        # measuring with Python makes a copy of the output.
+        # have a very good reason. We need it to use wc and ulimit.
         pc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = pc.communicate()
         stdout = res[0].decode()
