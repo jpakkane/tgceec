@@ -170,12 +170,17 @@ def measure(subdir):
             continue
         cmd_arr = ['(', 'ulimit', '-t', '300', ';',\
                    'ulimit', '-v', '16252928', ';', compiler, "'%s'" % fullsrc] + basic_flags
+        faulty = False
         if subdir == 'anything':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
-                if not line.startswith('/usr/include') or '..' in line or '//' in line:
+                if not line.startswith('/usr/include') or '..' in line or '//' in line or ';' in line or '&' in line or '|' in line or "'" in line or '"' in line:
                     print('Invalid include dir', line.strip(), 'in', d)
+                    faulty = True
+                    break
                 cmd_arr.append('-I' + line.strip())
+        if faulty:
+            continue
         cmd_arr += [')', '2>&1', '>', '/dev/null', '|', 'wc', '-c']
         cmd = ' '.join(cmd_arr)
         # Remember kids, you should not use shell=True unless you
