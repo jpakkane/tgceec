@@ -23,7 +23,7 @@ import subprocess
 import re
 
 def barechecker(infile):
-    if len(open(infile).read()) > 1024:
+    if len(open(infile, 'rb').read()) > 1024:
         print('Source file', infile, 'too long.')
     src = open(infile).read()
     if '#' in src or '??=' in src or '%:' in src:
@@ -62,7 +62,7 @@ def plainchecker(infile):
                  'tuple' : True,
                  'initializer_list' : True
                  }
-    if len(open(infile).read()) > 512:
+    if len(open(infile, 'rb').read()) > 512:
         print('Source file', infile, 'too long.')
     includere = re.compile('''^\s*#\s*include\s*[<"](.*?)[>"]''')
     for line in open(infile):
@@ -78,7 +78,7 @@ def plainchecker(infile):
     return True
 
 def anythingchecker(infile):
-    if len(open(infile).read()) > 256:
+    if len(open(infile, 'rb').read()) > 256:
         print('Source file', infile, 'too long.')
     return True
 
@@ -192,7 +192,7 @@ def measure(subdir):
         pc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = pc.communicate()
         stdout = res[0].decode()
-        input_size = len(open(fullsrc).read())
+        input_size = len(open(fullsrc, 'rb').read())
         output_size = int(stdout)
         if input_size == 0:
             print('Empty input file in subdir', d)
