@@ -29,6 +29,10 @@ def barechecker(infile):
     if '#' in src or '??=' in src or '%:' in src:
         print("Attempt to use the preprocessor in", infile)
         return False
+    for line in open(infile).read():
+        if line.strip().endswith('%'):
+            print('Attempt to use the preprocessor in,', infile)
+            return False
     return True
 
 def plainchecker(infile):
@@ -68,7 +72,7 @@ def plainchecker(infile):
             if include not in permitted:
                 print("Invalid include", include, "in", infile)
                 return False
-        elif '#' in line or '??=' in line or '%:' in line:
+        elif '#' in line or '??=' in line or '%:' in line or line.strip().endswith('%'):
             print('Invalid use of preprocessor in', infile)
             return False
     return True
@@ -174,7 +178,7 @@ def measure(subdir):
         if subdir == 'anything':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
-                if not line.startswith('/usr/include') or '..' in line or '//' in line or ';' in line or '&' in line or '|' in line or "'" in line or '"' in line or '`' in line::
+                if not line.startswith('/usr/include') or '..' in line or '//' in line or ';' in line or '&' in line or '|' in line or "'" in line or '"' in line or '`' in line:
                     print('Invalid include dir', line.strip(), 'in', d)
                     faulty = True
                     break
