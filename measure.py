@@ -30,7 +30,7 @@ def barechecker(infile):
         print("Attempt to use the preprocessor in", infile)
         return False
     for line in open(infile).read():
-        if line.strip().endswith('%'):
+        if line.strip().endswith('%\\'):
             print('Attempt to use the preprocessor in,', infile)
             return False
     return True
@@ -72,7 +72,7 @@ def plainchecker(infile):
             if include not in permitted:
                 print("Invalid include", include, "in", infile)
                 return False
-        elif '#' in line or '??=' in line or '%:' in line or line.strip().endswith('%'):
+        elif '#' in line or '??=' in line or '%:' in line or line.strip().endswith('%\\'):
             print('Invalid use of preprocessor in', infile)
             return False
     return True
