@@ -148,13 +148,14 @@ def measure(subdir):
     buildtype_flags = {'oneshot': ['-fmax-errors=1']}
     results = []
     include_re = re.compile('[^a-zA-Z0-9/-_.]')
+    dirname_re = re.compile('[^a-z0-9]')
     for d in glob(os.path.join(subdir, '*')):
         basename = os.path.split(d)[-1]
+        if dirname_re.search(basename) is not None:
+            print("Only lowercase letters and numbers allowed in entry name.")
+            continue
         sourcename = basename + '.cpp'
         fullsrc = os.path.join(d, sourcename)
-        if "'" in fullsrc:
-            print('File name must not contain an apostrophe.')
-            continue
         if has_extra_files(d, basename):
             continue
         if not os.path.isfile(fullsrc):
