@@ -82,6 +82,11 @@ def anythingchecker(infile):
         print('Source file', infile, 'too long.')
     return True
 
+def oneshotchecker(infile):
+    if len(open(infile, 'rb').read()) > 128:
+        print('Source file', infile, 'too long.')
+    return True
+
 def packages_installed(packagefile):
     if not os.path.isfile(packagefile):
         print('Package file missing in ', packagefile)
@@ -137,6 +142,7 @@ def has_extra_files(d, basename):
 def measure(subdir):
     compiler = '/usr/bin/g++'
     basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
+    buildtype_flags = {'oneshot': ['-fmax-errors=1']}
     results = []
     for d in glob(os.path.join(subdir, '*')):
         basename = os.path.split(d)[-1]
@@ -161,8 +167,8 @@ def measure(subdir):
                 continue
         if not info_ok(infofile):
             continue
-        if subdir == 'plain':
-            checker = plainchecker
+        if subdir == 'oneshot':
+            checker = oneshotchecker
         elif subdir == 'barehands':
             checker = barechecker
         else:
@@ -185,8 +191,10 @@ def measure(subdir):
                 cmd_arr.append('-I' + line.strip())
         if faulty:
             continue
+        cmd_arr += buildtype_flags[subdir]
         cmd_arr += [')', '2>&1', '>', '/dev/null', '|', 'wc', '-c']
         cmd = ' '.join(cmd_arr)
+        print(cmd)
         # Remember kids, you should not use shell=True unless you
         # have a very good reason. We need it to use wc and ulimit.
         pc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -208,24 +216,25 @@ def run():
     print('and print the results.\n')
     print('The output contains four elements:')
     print('ratio, source code size, error message size, name\n')
-    print('Starting measurements for type plain.')
-    plain_times = measure('plain')
+    print('Starting measurements for type oneshot.')
+    plain_times = measure('oneshot')
     print('Table for category plain:\n')
     for i in plain_times:
         print('%.2f' % i[0], i[1], i[2], i[3])
-    print('')
-    print('Starting measurements for type bare hands.')
-    bare_times = measure('barehands')
-    print('Table for category bare hands:\n')
-    for i in bare_times:
-        print('%.2f' % i[0], i[1], i[2], i[3])
-    print('')
-    print('Starting measurements for type anything.')
-    anything_times = measure('anything')
-    print('Table for category anything:\n')
-    for i in anything_times:
-        print('%.2f' % i[0], i[1], i[2], i[3])
-    print('')
+    
+#    print('')
+#    print('Starting measurements for type bare hands.')
+#    bare_times = measure('barehands')
+#    print('Table for category bare hands:\n')
+#    for i in bare_times:
+#        print('%.2f' % i[0], i[1], i[2], i[3])
+#    print('')
+#    print('Starting measurements for type anything.')
+#    anything_times = measure('anything')
+#    print('Table for category anything:\n')
+#    for i in anything_times:
+#        print('%.2f' % i[0], i[1], i[2], i[3])
+#    print('')
 
 if __name__ == '__main__':
     run()
