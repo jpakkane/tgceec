@@ -131,7 +131,10 @@ def has_extra_files(d, basename):
     allowed = {'info.txt' : True,
                'includes.txt' : True,
                'packages.txt' : True,
-               basename + '.cpp' : True}
+               basename + '.cpp': True
+               }
+    if os.path.split(basename)[0] == 'levenshtein':
+        allowed[basename + '_fail.cpp'] = True
     for d in glob(os.path.join(d, '*')):
         base = os.path.split(d)[-1]
         if base not in allowed:
@@ -144,6 +147,7 @@ def measure(subdir):
     basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
     buildtype_flags = {'oneshot': ['-fmax-errors=1']}
     results = []
+    include_re = re.compile('[^a-zA-Z0-9/-_.]')
     for d in glob(os.path.join(subdir, '*')):
         basename = os.path.split(d)[-1]
         sourcename = basename + '.cpp'
@@ -184,11 +188,12 @@ def measure(subdir):
         if subdir == 'anything':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
-                if not line.startswith('/usr/include') or '..' in line or '//' in line or ';' in line or '&' in line or '|' in line or "'" in line or '"' in line or '`' in line:
-                    print('Invalid include dir', line.strip(), 'in', d)
+                line = line.strip()
+                if include_re.search(line) is not None:
+                    print('Invalid include dir', line, 'in', d)
                     faulty = True
                     break
-                cmd_arr.append('-I' + line.strip())
+                cmd_arr.append('-I' + line)
         if faulty:
             continue
         cmd_arr += buildtype_flags[subdir]
