@@ -21,6 +21,10 @@ from glob import glob
 import os
 import subprocess
 import re
+import random
+import Levenshtein
+
+random.seed()
 
 def barechecker(infile):
     if len(open(infile, 'rb').read()) > 1024:
@@ -85,6 +89,68 @@ def anythingchecker(infile):
 def oneshotchecker(infile):
     if len(open(infile, 'rb').read()) > 128:
         print('Source file', infile, 'too long.')
+        return False
+    return True
+
+def create_testdata():
+    res = []
+    for i in range(random.randint(1000, 10000)):
+        res.append(chr(ord('a') + random.randint(0, 26)))
+        if random.random() < 0.1:
+            res.append('\n')
+    return ''.join(res)
+
+def levenshteinchecker(infile):
+    (base, suf) = os.path.splitext(infile)
+    okfile = base + '_ok' + suf
+    if not os.path.exists(okfile):
+        print('Passing file', okfile, 'not found.')
+        return False
+    dist = Levenshtein.distance(open(infile, 'rb').read(), open(okfile, 'rb').read())
+    if dist != 1:
+        print('Levenshtein distance', dist, 'not equal to one.')
+    binname = os.path.join(os.path.curdir, 'levbinary')
+    cmd = ['g++', '-std=c++11', '-Wall', '-Wextra', '-Wpedantic', '-o', binname, okfile]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (stdo, stde) = p.communicate()
+    stdo = stdo.decode()
+    stde = stde.decode()
+    if p.returncode != 0:
+        print("Compilation failed.")
+        print(stdo)
+        print(stde)
+        return False
+    if len(stdo) != 0:
+        print("Fail, stdout has text:")
+        print(stdo)
+        return False
+    if len(stde) != 0:
+        print('Fail, stderr has text:')
+        print(stde)
+        return False
+    testdata = create_testdata()
+    testifname = 'test.dat'
+    testofname = 'output.dat'
+    open(testifname, 'w').write(testdata)
+    p = subprocess.Popen([binname, testifname, testofname], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    p.communicate()
+    if p.returncode != 0:
+        print("Running test binary failed.")
+        os.unlink(binname)
+        os.unlink(testifname)
+        return False
+    if not os.path.exists(testofname):
+        print('Output file not created.')
+        os.unlink(binname)
+        os.unlink(testifname)
+        return False
+    testoutput = open(testofname, 'r').read()
+    os.unlink(binname)
+    os.unlink(testifname)
+    os.unlink(testofname)
+    if testoutput[::-1] != testdata:
+        print("Output is incorrect.")
+        return False
     return True
 
 def packages_installed(packagefile):
@@ -133,19 +199,20 @@ def has_extra_files(d, basename):
                'packages.txt' : True,
                basename + '.cpp': True
                }
-    if os.path.split(basename)[0] == 'levenshtein':
-        allowed[basename + '_fail.cpp'] = True
+    if os.path.split(d)[0] == 'levenshtein':
+        allowed[basename + '_ok.cpp'] = True
     for d in glob(os.path.join(d, '*')):
         base = os.path.split(d)[-1]
         if base not in allowed:
-            print(d, 'has an extra file', base)
+            print(basename, 'has an extra file', base)
             return True
     return False
 
 def measure(subdir):
     compiler = '/usr/bin/g++'
     basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
-    buildtype_flags = {'oneshot': ['-fmax-errors=1']}
+    buildtype_flags = {'oneshot': ['-fmax-errors=1'],
+                       'levenshtein' : []}
     results = []
     include_re = re.compile('[^a-zA-Z0-9/-_.]')
     dirname_re = re.compile('[^a-z0-9]')
@@ -174,8 +241,8 @@ def measure(subdir):
             continue
         if subdir == 'oneshot':
             checker = oneshotchecker
-        elif subdir == 'barehands':
-            checker = barechecker
+        elif subdir == 'levenshtein':
+            checker = levenshteinchecker
         else:
             checker = anythingchecker
         if not checker(fullsrc):
@@ -200,7 +267,6 @@ def measure(subdir):
         cmd_arr += buildtype_flags[subdir]
         cmd_arr += [')', '2>&1', '>', '/dev/null', '|', 'wc', '-c']
         cmd = ' '.join(cmd_arr)
-        print(cmd)
         # Remember kids, you should not use shell=True unless you
         # have a very good reason. We need it to use wc and ulimit.
         pc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -224,10 +290,15 @@ def run():
     print('ratio, source code size, error message size, name\n')
     print('Starting measurements for type oneshot.')
     plain_times = measure('oneshot')
-    print('Table for category plain:\n')
+    print('Table for category oneshot:\n')
     for i in plain_times:
         print('%.2f' % i[0], i[1], i[2], i[3])
-    
+
+    lev_times = measure('levenshtein')
+    print('Table for category levenshtein:')
+    for i in lev_times:
+        print('%.2f' % i[0], i[1], i[2], i[3])
+
 #    print('')
 #    print('Starting measurements for type bare hands.')
 #    bare_times = measure('barehands')

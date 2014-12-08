@@ -3,7 +3,7 @@ How to participate
 This documentation describes how to create and submit your entry to
 the Grand C++ Error Explosion Competition. The steps below should work
 on any Linux platform but the final measurements will be done on a 64
-bit install of Ubuntu 13/10 (saucy). Note that the flag -std=c++11 is
+bit install of Ubuntu 14/10 (utopic). Note that the flag -std=c++11 is
 used on all entries. It is the submitter's responsibility to test
 their submission on the target platform, the organizers will not
 provide technical support or intermediary results over email or any
@@ -15,12 +15,12 @@ subdir to store your entry in. It can have any name, but it is
 recommended to make it short and relatively unique, such as an
 abbreviation of your name.
 
-mkdir plain/bobmcbob
+mkdir oneshot/bobmcbob
 
 In this subdirectory create a source file whose name is the same as
 the directory and with the suffix cpp.
 
-touch plain/bobmcbob/bobmcbob.cpp
+touch oneshot/bobmcbob/bobmcbob.cpp
 
 Create an info file in the subdirectory with your contact info.
 It must be called info.txt and contain the following three lines.
@@ -52,7 +52,7 @@ your version.
 Once your code passes validation it is ready for submission. Zip up your
 directory.
 
-zip -r bobmcbob.zip plain/bobmcbob
+zip -r bobmcbob.zip oneshot/bobmcbob
 
 Now you can email it to <tgceec@gmail.com>. Note that if you submit an
 entry that does not pass the validation check, it will be silently
