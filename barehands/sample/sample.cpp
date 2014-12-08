@@ -1,1 +1,0 @@
-void I am error();

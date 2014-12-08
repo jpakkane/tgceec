@@ -11,4 +11,4 @@ int main(int /*argc*/, char **argv) {
     std::ofstream o(argv[2]);
     o << j;
     return 0;
- }
+}

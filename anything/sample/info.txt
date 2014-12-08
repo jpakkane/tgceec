@@ -1,3 +1,0 @@
-email someone@example.com
-title Anything sample
-author Someone Somewhere

@@ -1,3 +1,0 @@
-email foo@example.com
-title Barehands sample
-author Firstname Lastname

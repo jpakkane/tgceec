@@ -1,3 +1,0 @@
-email foo@example.com
-title Simple sample
-author My Name
