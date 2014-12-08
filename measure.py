@@ -26,17 +26,12 @@ import Levenshtein
 
 random.seed()
 
-def barechecker(infile):
-    if len(open(infile, 'rb').read()) > 1024:
+precision_target = 3294198 # Pi megabytes
+
+def precisionchecker(infile):
+    if len(open(infile, 'rb').read()) > 256:
         print('Source file', infile, 'too long.')
-    src = open(infile).read()
-    if '#' in src or '??=' in src or '%:' in src:
-        print("Attempt to use the preprocessor in", infile)
         return False
-    for line in open(infile).read():
-        if line.strip().endswith('%\\'):
-            print('Attempt to use the preprocessor in,', infile)
-            return False
     return True
 
 def plainchecker(infile):
@@ -109,9 +104,11 @@ def levenshteinchecker(infile):
     dist = Levenshtein.distance(open(infile, 'rb').read(), open(okfile, 'rb').read())
     if dist != 1:
         print('Levenshtein distance', dist, 'not equal to one.')
+        return False
     binname = os.path.join(os.path.curdir, 'levbinary')
     cmd = ['g++', '-std=c++11', '-Wall', '-Wextra', '-Wpedantic', '-o', binname, okfile]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Fixme, should we check for comments and trigraphs?
     (stdo, stde) = p.communicate()
     stdo = stdo.decode()
     stde = stde.decode()
@@ -212,7 +209,8 @@ def measure(subdir):
     compiler = '/usr/bin/g++'
     basic_flags = ['-std=c++11', '-c', '-o', '/dev/null']
     buildtype_flags = {'oneshot': ['-fmax-errors=1'],
-                       'levenshtein' : []}
+                       'levenshtein' : [],
+                       'precision' : []}
     results = []
     include_re = re.compile('[^a-zA-Z0-9/-_.]')
     dirname_re = re.compile('[^a-z0-9]')
@@ -244,7 +242,7 @@ def measure(subdir):
         elif subdir == 'levenshtein':
             checker = levenshteinchecker
         else:
-            checker = anythingchecker
+            checker = precisionchecker
         if not checker(fullsrc):
             continue
         if not os.path.isfile(fullsrc):
@@ -284,34 +282,26 @@ def measure(subdir):
 
 def run():
     print('The Grand C++ Error Explosion Competition\n')
-    print('This program will measure entries, sort them by fitness')
-    print('and print the results.\n')
+    print('This program will measure entries and print the results (not necessarily in order).\n')
     print('The output contains four elements:')
     print('ratio, source code size, error message size, name\n')
     print('Starting measurements for type oneshot.')
     plain_times = measure('oneshot')
-    print('Table for category oneshot:\n')
+    print('Table for category oneshot:')
     for i in plain_times:
         print('%.2f' % i[0], i[1], i[2], i[3])
 
+    print('Starting measurements for type levenshtein.')
     lev_times = measure('levenshtein')
-    print('Table for category levenshtein:')
+    print('\nTable for category levenshtein:')
     for i in lev_times:
         print('%.2f' % i[0], i[1], i[2], i[3])
 
-#    print('')
-#    print('Starting measurements for type bare hands.')
-#    bare_times = measure('barehands')
-#    print('Table for category bare hands:\n')
-#    for i in bare_times:
-#        print('%.2f' % i[0], i[1], i[2], i[3])
-#    print('')
-#    print('Starting measurements for type anything.')
-#    anything_times = measure('anything')
-#    print('Table for category anything:\n')
-#    for i in anything_times:
-#        print('%.2f' % i[0], i[1], i[2], i[3])
-#    print('')
+    print('Starting measurements for type precision.')
+    prec_times = measure('precision')
+    print('\nTable for category precision:')
+    for i in prec_times:
+        print('%d' % abs(precision_target - i[2]), i[3])
 
 if __name__ == '__main__':
     run()
