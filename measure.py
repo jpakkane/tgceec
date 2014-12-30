@@ -252,7 +252,7 @@ def measure(subdir):
         cmd_arr = ['(', 'ulimit', '-t', '300', ';',\
                    'ulimit', '-v', '16252928', ';', compiler, "'%s'" % fullsrc] + basic_flags
         faulty = False
-        if subdir == 'anything':
+        if subdir == 'oneshot':
             includefile = os.path.join(d, 'includes.txt')
             for line in open(includefile):
                 line = line.strip()
