@@ -76,11 +76,6 @@ def plainchecker(infile):
             return False
     return True
 
-def anythingchecker(infile):
-    if len(open(infile, 'rb').read()) > 256:
-        print('Source file', infile, 'too long.')
-    return True
-
 def oneshotchecker(infile):
     if len(open(infile, 'rb').read()) > 128:
         print('Source file', infile, 'too long.')
@@ -101,14 +96,20 @@ def levenshteinchecker(infile):
     if not os.path.exists(okfile):
         print('Passing file', okfile, 'not found.')
         return False
-    dist = Levenshtein.distance(open(infile, 'rb').read(), open(okfile, 'rb').read())
+    entry_src = open(infile, 'rb').read()
+    if len(entry_src) > 256:
+        print('Source file too big.')
+        return False
+    dist = Levenshtein.distance(entry_src, open(okfile, 'rb').read())
     if dist != 1:
         print('Levenshtein distance', dist, 'not equal to one.')
         return False
     binname = os.path.join(os.path.curdir, 'levbinary')
     cmd = ['g++', '-std=c++11', '-Wall', '-Wextra', '-Wpedantic', '-o', binname, okfile]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # Fixme, should we check for comments and trigraphs?
+    if b'//' in entry_src or b'/*' in entry_src:
+        print("Comments are forbidden in this category. Nice try, though.")
+        return False
     (stdo, stde) = p.communicate()
     stdo = stdo.decode()
     stde = stde.decode()
@@ -291,13 +292,13 @@ def run():
     for i in plain_times:
         print('%.2f' % i[0], i[1], i[2], i[3])
 
-    print('Starting measurements for type levenshtein.')
+    print('\nStarting measurements for type levenshtein.')
     lev_times = measure('levenshtein')
     print('\nTable for category levenshtein:')
     for i in lev_times:
         print('%.2f' % i[0], i[1], i[2], i[3])
 
-    print('Starting measurements for type precision.')
+    print('\nStarting measurements for type precision.')
     prec_times = measure('precision')
     print('\nTable for category precision:')
     for i in prec_times:

@@ -1,14 +1,14 @@
 #include<iostream>
 #include<fstream>
 #include<sstream>
-
-int main(int /*argc*/, char **argv) {
-    std::ifstream t(argv[1]);
-    std::stringstream s;
-    s << t.rdbuf();
-    auto i = s.str();
-    std::string j(i.rbegin(), i.rend());
-    std::ofstream o(argv[2]);
-    o << j;
-    return 0
+using namespace std;
+int main(int, char **argv) {
+ifstream t(argv[1]);
+stringstream s;
+s << t.rdbuf();
+auto i = s.str();
+string j(i.rbegin(), i.rend());
+ofstream o(argv[2]);
+o << j;
+return 0
 }
