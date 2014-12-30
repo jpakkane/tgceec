@@ -23,10 +23,11 @@ import subprocess
 import re
 import random
 import Levenshtein
+import math
 
 random.seed()
 
-precision_target = 3294198 # Pi megabytes
+precision_target = int(math.pi*1024*1024)
 
 def precisionchecker(infile):
     if len(open(infile, 'rb').read()) > 256:
@@ -77,7 +78,7 @@ def plainchecker(infile):
     return True
 
 def oneshotchecker(infile):
-    if len(open(infile, 'rb').read()) > 128:
+    if len(open(infile, 'rb').read()) > 256:
         print('Source file', infile, 'too long.')
         return False
     return True
