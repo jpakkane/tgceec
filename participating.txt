@@ -38,7 +38,7 @@ running the measurement script.
 
 If your entry has problems, the script will tell you.
 
-If you participate in the anything category, you need to create two
+If you participate in the oneshot category, you need to create two
 more files, a package file and include directory file. The package
 file contains a list of Ubuntu packages (one per line) that must be
 installed in order to compile the code. It is called packages.txt. The
