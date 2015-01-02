@@ -9,10 +9,16 @@ their submission on the target platform, the organizers will not
 provide technical support or intermediary results over email or any
 other medium.
 
-Select which category you wish to participate in. For this example we
-will use the plain category. Create a subdirectory in the category
-subdir to store your entry in. It can have any name, but it is
-recommended to make it short and relatively unique, such as an
+In order to run the test script you ned to first install the Python
+Levenshtein package. This can be accomplished with the following
+command:
+
+sudo apt-get install python3-levenshtein
+
+Then you need to select which category you wish to participate in. For
+this example we will use the oneshot category. Create a subdirectory in
+the category subdir to store your entry in. It can have any name, but
+it is recommended to make it short and relatively unique, such as an
 abbreviation of your name.
 
 mkdir oneshot/bobmcbob
@@ -57,7 +63,7 @@ zip -r bobmcbob.zip oneshot/bobmcbob
 Now you can email it to <tgceec@gmail.com>. Note that if you submit an
 entry that does not pass the validation check, it will be silently
 rejected from the competition. It is your responsibility to verify
-that your code passes. The test harness may be updated during the 
+that your code passes. The test harness may be updated during the
 competition. Submissions that don't pass the updated test harness
 will be discarded. It is the responsibility of the participants to
 resubmit entries that do not pass the test suite any more.
