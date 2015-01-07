@@ -300,10 +300,11 @@ def run():
         print('%.2f' % i[0], i[1], i[2], i[3])
 
     print('\nStarting measurements for type precision.')
+    print('source code size, delta, name')
     prec_times = measure('precision')
     print('\nTable for category precision:')
     for i in prec_times:
-        print('%d' % abs(precision_target - i[2]), i[3])
+        print(i[1], '%d' % abs(precision_target - i[2]), i[3])
 
 if __name__ == '__main__':
     run()
